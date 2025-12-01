@@ -8,6 +8,12 @@
 </head>
 
 <body>
+<!-- Barra de acessibilidade com controles de áudio -->
+  <div style="padding: 8px; background:#f4f4f4; border-bottom:1px solid #ccc;">
+    <strong>Acessibilidade:</strong>
+    <button onclick="lerPaginaInteira()">🔊 Ouvir página inteira</button>
+    <button onclick="pararLeitura()">⏹ Parar leitura</button>
+  </div>
  <header>
  <img src="minha-foto.jpg" alt="foto de perfil da laura">
  <h1>Laura Leandro Gera </h1>
@@ -60,7 +66,86 @@
 <footer>
  <p>todos os direitos reservados</p>
 </footer>
+<!-- ================== JAVASCRIPT DO LEITOR DE TEXTO ================== -->
+  <script>
+    /**
+     * Função genérica para criar um objeto de fala (texto em voz alta).
+     * Recebe uma string como parâmetro e configura a voz em português do Brasil.
+     */
+    function criarFala(texto) {
+      const fala = new SpeechSynthesisUtterance(texto); // Cria o objeto de fala
+      fala.lang = "pt-BR"; // Define o idioma da fala
+      fala.rate = 1;       // Velocidade da fala (1 é o normal)
+      fala.pitch = 1;      // Tom da voz (1 é o normal)
+      return fala;
+    }
 
+    /**
+     * Função que lê em voz alta TODO o texto visível da página.
+     * Ela pega o texto do elemento <body> inteiro.
+     */
+    function lerPaginaInteira() {
+      // Cancela qualquer leitura anterior que possa estar em andamento
+      speechSynthesis.cancel();
+
+      // Pega todo o texto do corpo da página
+      const textoPagina = document.body.innerText;
+
+      // Cria o objeto de fala com o texto da página
+      const fala = criarFala(textoPagina);
+
+      // Inicia a leitura em voz alta
+      speechSynthesis.speak(fala);
+    }
+
+    /**
+     * Função que lê em voz alta o texto de uma SEÇÃO específica.
+     * Recebe o ID de um elemento (por exemplo: "sobre", "contato").
+     */
+    function lerSecao(idSecao) {
+      // Cancela qualquer leitura que possa estar em andamento
+      speechSynthesis.cancel();
+
+      // Procura o elemento da seção pelo ID
+      const secao = document.getElementById(idSecao);
+
+      // Se não achar a seção, não faz nada
+      if (!secao) {
+        console.warn("Seção não encontrada: " + idSecao);
+        return;
+      }
+
+      // Pega todo o texto dentro da seção
+      const texto = secao.innerText;
+
+      // Cria o objeto de fala e inicia a leitura
+      const fala = criarFala(texto);
+      speechSynthesis.speak(fala);
+    }
+
+    /**
+     * Função que lê em voz alta um texto personalizado.
+     * Útil para descrever imagens, vídeos ou conteúdos que não estão escritos na página.
+     */
+    function lerTextoPersonalizado(texto) {
+      // Cancela qualquer leitura anterior
+      speechSynthesis.cancel();
+
+      // Cria a fala com o texto recebido
+      const fala = criarFala(texto);
+
+      // Inicia a fala
+      speechSynthesis.speak(fala);
+    }
+
+    /**
+     * Função para parar qualquer leitura de texto em andamento.
+     * Pode ser chamada por um botão "Parar leitura".
+     */
+    function pararLeitura() {
+      speechSynthesis.cancel(); // Interrompe a fala atual
+    }
+  </script>
 </body>
 
 </html> 
